@@ -24,7 +24,7 @@ export default function Maps() {
             key: "ZHTzbVIJuUS5mKdWZibARb8AmUGGEZzs",
             container: mapElement.current ?? "",
             center: [longitude , latitude ],
-            zoom: 14,
+            zoom: 15,
             stylesVisibility: {
               trafficFlow: true,
               trafficIncidents: true
@@ -60,13 +60,17 @@ export default function Maps() {
           console.log(e.lngLat);
         })
         let sorted = [
+          {
+            lat: latitude,
+            lng: longitude
+          },
           
           {
-            lat: 17.4307564,
-            lng: 78.3708978
-          },{
-            lat: 17.4577589 ,
+            lat: 17.4577589,
             lng: 78.3606787
+          },{
+            lat: 17.4308916 ,
+            lng: 78.3709561
           }
 
         ]
