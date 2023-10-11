@@ -56,7 +56,7 @@ export default function Maps() {
           });
           setLocations(data);
           data.map((a) => {
-            addMarker([a.longitude, a.latitude]);
+            addMarker([a.longitude, a.latitude], new Date(a.timestamp).toString());
           })
         }
       }
@@ -90,7 +90,32 @@ export default function Maps() {
       },
     });
   
-    const addMarker = (loc : [number, number]) => {
+    const addMarker = (loc : [number, number], date: string) => {
+      const popupOffset = {
+        bottom: [0, -15],
+      };
+      const popup = new tt.Popup({ offset: { bottom: [0, -15] } }).setHTML(
+        date
+      );
+      const element = document.createElement("div");
+      element.className = "marker";
+
+      const marker = new tt.Marker({
+        draggable: true,
+        element: element,
+      })
+        .setLngLat(loc)
+        .addTo(map);
+
+      marker.on("dragend", () => {
+        const lngLat = marker.getLngLat();
+        setLongitude(lngLat.lng);
+        setLatitude(lngLat.lat);
+      });
+
+      marker.setPopup(popup).togglePopup();
+    };
+    const addCurrentMarker = () => {
       const popupOffset = {
         bottom: [0, -15],
       };
@@ -104,7 +129,7 @@ export default function Maps() {
         draggable: true,
         element: element,
       })
-        .setLngLat(loc)
+        .setLngLat([longitude, latitude])
         .addTo(map);
 
       marker.on("dragend", () => {
@@ -164,9 +189,10 @@ export default function Maps() {
         });
     };
     locations.map((a) => {
-      addMarker([a.longitude, a.latitude]);
+      addMarker([a.longitude, a.latitude], new Date(a.timestamp).toString());
     })
     setMap(map);
+    addCurrentMarker();
     recalculateRoutes();
   }, [latitude]);
 

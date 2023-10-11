@@ -1,9 +1,10 @@
 import React, { ReactNode, useEffect, useState } from "react";
 import User from "../models/User";
-export const UserContext = React.createContext<[User, Function, string]>([
+export const UserContext = React.createContext<[User, Function, string|undefined, Function]>([
   new User("", ""),
   Function,
-  ""
+  undefined,
+  Function
 ]);
 export interface Props {
   children: ReactNode[] | ReactNode;
@@ -20,7 +21,7 @@ export default function Context(props: Props) {
       }
   },[])
   return (
-    <UserContext.Provider value={[user, SetUser, username!]}>
+    <UserContext.Provider value={[user, SetUser, username!, setUsername]}>
       {props.children}
     </UserContext.Provider>
   );

@@ -8,7 +8,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 export default function ProtectedRoute(props: Props) {
   const [state, setState, username] =
-    useContext<[User, Function, string]>(UserContext);
+    useContext<[User, Function, string|undefined, Function]>(UserContext);
   const [loading, setLoading] = useState(true);
   var latitude = 0;
   var longitude = 0;
@@ -30,6 +30,7 @@ export default function ProtectedRoute(props: Props) {
       if (username != undefined && (lastSavedLatitude.current != latitude || lastSavedLongitude.current != longitude)) {
         lastSavedLatitude.current = latitude;
         lastSavedLongitude.current = longitude;
+        console.log(username);
         try {
           let res = await axios.post(
             `${process.env.REACT_APP_SERVER_URL}/Location/addLocation`,
@@ -60,16 +61,14 @@ export default function ProtectedRoute(props: Props) {
 
     async function getCoords() {
       navigator.geolocation.getCurrentPosition(successCallback, errorCallback);
-      console.log(username);
      
     }
-    setInterval(getCoords, 60 * 1000);
+    setInterval(getCoords, 100);
   }, [username]);
   return (
     <div>
       {username == undefined ? (
         <div className="spinner">
-          {" "}
           <CircularProgress />
         </div>
       ) : (
