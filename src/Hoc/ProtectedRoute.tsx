@@ -63,7 +63,7 @@ export default function ProtectedRoute(props: Props) {
       navigator.geolocation.getCurrentPosition(successCallback, errorCallback);
      
     }
-    setInterval(getCoords, 100);
+    setInterval(getCoords, 1000 * 60 *5);
   }, [username]);
   return (
     <div>

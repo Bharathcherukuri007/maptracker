@@ -8,11 +8,13 @@ import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
 import { Typography } from "@mui/material";
 import axios from "axios";
+import { Link, useNavigate } from "react-router-dom";
 export default function Register() {
   const [user, setUser] = useState<User>(new User("", ""));
   const [valid, SetValid] = useState<boolean>(true);
   const [showSnackBar, SetShowSnackBar] = useState(false);
   const [err, setErr] = useState<any>("");
+  const navigate = useNavigate();
 
   function isValid(user: User) {
     if (user?.password?.length! >= 8 && user!.name!.trim().length > 1) {
@@ -32,6 +34,9 @@ export default function Register() {
       if (res.status == 200) {
         SetShowSnackBar(true);
         SetValid(true);
+        setTimeout(() => {
+          navigate('/login');
+        }, 200);
       } else {
         SetShowSnackBar(false);
         SetValid(false);
@@ -48,6 +53,13 @@ export default function Register() {
       <div className="maincontainer">
         <h1>SignUp</h1>
         <div className="form">
+        <Typography variant="h6">
+            Already a user? {' '}  
+            
+            <span>
+              <Link to="/login">Login</Link>
+            </span>
+          </Typography>
           <TextField
             required
             id="outlined-required"

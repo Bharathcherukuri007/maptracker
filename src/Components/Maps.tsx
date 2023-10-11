@@ -21,6 +21,14 @@ import useAuth from "../Hooks/useAuth";
 import User from "../models/User";
 import Location from "../models/Locations";
 import { resData } from "../models/Locations";
+
+
+export interface CalculateRoute{
+  
+  lat: number,
+  lng: number
+  
+}
 export default function Maps() {
   const mapElement = React.useRef<HTMLDivElement>(null);
   const [map, setMap] = useState<tt.Map>();
@@ -32,6 +40,7 @@ export default function Maps() {
   const [location , setLocation] = useState(true);
   const [signIn, signOut] = useAuth();
   const navigate = useNavigate();
+  const [latlng, setLantlng] = useState<CalculateRoute[]>();
   const [locations, setLocations] = useState<Location[]>([]);
   
 
@@ -55,9 +64,15 @@ export default function Maps() {
             
           });
           setLocations(data);
+          let routingLocations: CalculateRoute[] = [];
           data.map((a) => {
-            addMarker([a.longitude, a.latitude], new Date(a.timestamp).toString());
-          })
+            routingLocations = [...routingLocations, {
+              lat: a.latitude,
+              lng: a.longitude
+            }];
+            addMarker([a.longitude, a.latitude], `${new Date((a.timestamp)).getHours().toString().padStart(2, '0')}: ${new Date((a.timestamp)).getMinutes().toString().padStart(2, '0')}: ${new Date((a.timestamp)).getSeconds().toString().padStart(2, '0')}`);
+          });
+          setLantlng(routingLocations);
         }
       }
       catch(e){
@@ -174,11 +189,12 @@ export default function Maps() {
         },
       });
     };
+
     const recalculateRoutes = () => {
       ttapi.services
         .calculateRoute({
           key: process.env.REACT_APP_API_KEY!,
-          locations: sorted,
+          locations: latlng,
         })
         .then((routeData: ttapi.CalculateRouteResponse) => {
           const geoJson = routeData.toGeoJson();

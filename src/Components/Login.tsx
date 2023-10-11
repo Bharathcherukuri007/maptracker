@@ -7,8 +7,10 @@ import { use } from "chai";
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
 import axios from "axios";
-import { redirect, useNavigate } from "react-router-dom";
+import { redirect, useNavigate, Link } from "react-router-dom";
 import useAuth from "../Hooks/useAuth";
+import Register from "./Register";
+import { Typography } from "@mui/material";
 export default function Login() {
   const [user, setUser] = useState<User>(new User("", ""));
   const [valid, SetValid] = useState<boolean>(true);
@@ -31,14 +33,15 @@ export default function Login() {
           userPassword: user.password,
         }
       );
-      if (res.status == 200  && res.data["isValid"]) {
+      if (res.status == 200 && res.data["isValid"]) {
         SetShowSnackBar(true);
         SetValid(true);
         signIn(user);
-        navigate("/home");
+        navigate("/");
       } else {
-        SetShowSnackBar(false);
+        SetShowSnackBar(true);
         SetValid(false);
+        setErr("invalid");
       }
       setTimeout(() => {
         SetShowSnackBar(false);
@@ -58,6 +61,13 @@ export default function Login() {
       <div className="maincontainer">
         <h1>Login</h1>
         <div className="form">
+          <Typography variant="h6">
+            Create Your Account {' '}  
+            
+            <span>
+              <Link to="/register">Register</Link>
+            </span>
+          </Typography>
           <TextField
             required
             id="outlined-required"
@@ -76,7 +86,12 @@ export default function Login() {
             }}
           />
           {isValid(user) ? (
-            <Button size="large" variant="contained" className="loginbutton" onClick={validateUser}>
+            <Button
+              size="large"
+              variant="contained"
+              className="loginbutton"
+              onClick={validateUser}
+            >
               Login
             </Button>
           ) : (
@@ -91,7 +106,7 @@ export default function Login() {
           )}
           <Snackbar open={showSnackBar} autoHideDuration={6000}>
             <Alert
-              severity= {valid ? "success" : "error"}
+              severity={valid ? "success" : "error"}
               sx={{ width: "100%" }}
             >
               {valid ? "Login Success" : err}
