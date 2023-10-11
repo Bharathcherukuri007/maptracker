@@ -33,6 +33,7 @@ export default function Maps() {
   const [signIn, signOut] = useAuth();
   const navigate = useNavigate();
   const [locations, setLocations] = useState<Location[]>([]);
+  
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);

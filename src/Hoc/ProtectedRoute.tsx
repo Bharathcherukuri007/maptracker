@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useMemo, useState } from "react";
+import React, { useContext, useEffect, useMemo, useRef, useState } from "react";
 import { Props, UserContext } from "../Context/Context";
 import Context from "../Context/Context";
 import User from "../models/User";
@@ -13,6 +13,8 @@ export default function ProtectedRoute(props: Props) {
   var latitude = 0;
   var longitude = 0;
   const navigate = useNavigate();
+  const lastSavedLatitude = useRef<number>();
+  const lastSavedLongitude = useRef<number>();
   useEffect(() => {
     if (localStorage.getItem("user") != undefined) {
       setLoading(false);
@@ -25,7 +27,9 @@ export default function ProtectedRoute(props: Props) {
     const successCallback = async (position: GeolocationPosition) => {
       latitude = position.coords.latitude;
       longitude = position.coords.longitude;
-      if (username != undefined) {
+      if (username != undefined && (lastSavedLatitude.current != latitude || lastSavedLongitude.current != longitude)) {
+        lastSavedLatitude.current = latitude;
+        lastSavedLongitude.current = longitude;
         try {
           let res = await axios.post(
             `${process.env.REACT_APP_SERVER_URL}/Location/addLocation`,
