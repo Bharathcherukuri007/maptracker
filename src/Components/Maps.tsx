@@ -70,14 +70,16 @@ export default function Maps() {
               lat: a.latitude,
               lng: a.longitude
             }];
-            addMarker([a.longitude, a.latitude], `${new Date((a.timestamp)).getHours().toString().padStart(2, '0')}: ${new Date((a.timestamp)).getMinutes().toString().padStart(2, '0')}: ${new Date((a.timestamp)).getSeconds().toString().padStart(2, '0')}`);
+            //`${new Date((a.timestamp)).getHours().toString().padStart(2, '0')}: ${new Date((a.timestamp)).getMinutes().toString().padStart(2, '0')}: ${new Date((a.timestamp)).getSeconds().toString().padStart(2, '0')}`
+            addMarker([a.longitude, a.latitude], new Date(a.timestamp).toUTCString());
           });
-          setLantlng(routingLocations);
+          // setLantlng(routingLocations);
         }
       }
       catch(e){
 
       }
+      recalculateRoutes();
       
     }, 0);
 
@@ -191,10 +193,19 @@ export default function Maps() {
     };
 
     const recalculateRoutes = () => {
+      let routingLocations : CalculateRoute[] = [];
+      locations.map((a) => {
+        routingLocations = [...routingLocations, {
+          lat: a.latitude,
+          lng: a.longitude
+        }];
+        //`${new Date((a.timestamp)).getHours().toString().padStart(2, '0')}: ${new Date((a.timestamp)).getMinutes().toString().padStart(2, '0')}: ${new Date((a.timestamp)).getSeconds().toString().padStart(2, '0')}`
+        addMarker([a.longitude, a.latitude], new Date(a.timestamp).toUTCString());
+      });
       ttapi.services
         .calculateRoute({
           key: process.env.REACT_APP_API_KEY!,
-          locations: latlng,
+          locations: routingLocations,
         })
         .then((routeData: ttapi.CalculateRouteResponse) => {
           const geoJson = routeData.toGeoJson();
@@ -204,9 +215,9 @@ export default function Maps() {
           console.log(e);
         });
     };
-    locations.map((a) => {
-      addMarker([a.longitude, a.latitude], new Date(a.timestamp).toString());
-    })
+    // locations.map((a) => {
+    //   addMarker([a.longitude, a.latitude], new Date(a.timestamp).toString());
+    // })
     setMap(map);
     addCurrentMarker();
     recalculateRoutes();
