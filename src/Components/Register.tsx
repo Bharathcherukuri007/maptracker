@@ -9,6 +9,7 @@ import Alert from "@mui/material/Alert";
 import { Typography } from "@mui/material";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
+import config from "../config";
 export default function Register() {
   const [user, setUser] = useState<User>(new User("", ""));
   const [valid, SetValid] = useState<boolean>(true);
@@ -25,7 +26,7 @@ export default function Register() {
   async function postUser() {
     try {
       var res = await axios.post(
-        `${process.env.REACT_APP_SERVER_URL}/User/user`,
+        `${config.API_KEY}/User/user`,
         {
           userName: user.name,
           userPassword: user.password,

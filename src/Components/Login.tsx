@@ -11,6 +11,8 @@ import { redirect, useNavigate, Link } from "react-router-dom";
 import useAuth from "../Hooks/useAuth";
 import Register from "./Register";
 import { Typography } from "@mui/material";
+import config from "../config";
+
 export default function Login() {
   const [user, setUser] = useState<User>(new User("", ""));
   const [valid, SetValid] = useState<boolean>(true);
@@ -27,7 +29,7 @@ export default function Login() {
   async function validateUser() {
     try {
       var res = await axios.post(
-        `${process.env.REACT_APP_SERVER_URL}/User/checkuser`,
+        `${config.API_KEY}/User/checkuser`,
         {
           userName: user.name,
           userPassword: user.password,

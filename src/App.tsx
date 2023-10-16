@@ -7,6 +7,7 @@ import Register from "./Components/Register";
 import Context from "./Context/Context";
 import ProtectedRoute from "./Hoc/ProtectedRoute";
 import Error from "./Components/Error";
+import Charts from "./Components/Charts";
 function App() {
   return (
     <Context>
@@ -21,6 +22,14 @@ function App() {
           }
         ></Route>
         <Route path="/register" element={<Register />}></Route>
+        <Route
+          path="/report"
+          element={
+            <ProtectedRoute>
+              <Charts />
+            </ProtectedRoute>
+          }
+        ></Route>
 		<Route path="/error" element = {<Error/>}></Route>
       </Routes>
     </Context>

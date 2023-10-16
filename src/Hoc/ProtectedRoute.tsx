@@ -6,6 +6,7 @@ import "../App.css";
 import CircularProgress from "@mui/material/CircularProgress";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import config from "../config";
 export default function ProtectedRoute(props: Props) {
   const [state, setState, username] =
     useContext<[User, Function, string|undefined, Function]>(UserContext);
@@ -33,7 +34,7 @@ export default function ProtectedRoute(props: Props) {
         console.log(username);
         try {
           let res = await axios.post(
-            `${process.env.REACT_APP_SERVER_URL}/Location/addLocation`,
+            `${config.API_KEY}/Location/addLocation`,
             {
               "username": username,
               "location": {
