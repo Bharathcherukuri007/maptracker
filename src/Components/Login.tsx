@@ -5,11 +5,10 @@ import TextField from '@mui/material/TextField';
 import User from '../models/User';
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
-import axios from 'axios';
 import {  useNavigate, Link } from 'react-router-dom';
 import useAuth from '../Hooks/useAuth';
 import { Typography } from '@mui/material';
-import config from '../config';
+import useServiceLayer from '../serviceLayer/servicelayer';
 
 export default function Login() {
 	const [user, setUser] = useState<User>(new User('', ''));
@@ -18,6 +17,8 @@ export default function Login() {
 	const [err, setErr] = useState('');
 	const navigate = useNavigate();
 	const [signIn] = useAuth();
+	const {checkUser} = useServiceLayer();
+
 
 	function isValid(user: User) {
 		if (user!.password!.length! >= 8 && user!.name!.trim().length > 1) {
@@ -27,32 +28,21 @@ export default function Login() {
 	}
   
 	async function validateUser() {
-		try {
-			const res = await axios.post(`${config.API_KEY}/User/checkuser`, {
-				userName: user.name,
-				userPassword: user.password,
-			});
-			if (res.status === 200 && res.data['isValid']) {
-				SetShowSnackBar(true);
-				SetValid(true);
-				signIn(user);
-				navigate('/');
-			} else {
-				SetShowSnackBar(true);
-				SetValid(false);
-				setErr('invalid');
-			}
-			setTimeout(() => {
-				SetShowSnackBar(false);
-			}, 1000);
-		} catch (e) {
+		const res = await checkUser(user);
+		if(res.success){
+			SetShowSnackBar(true);
+			SetValid(true);
+			signIn(user);
+			navigate('/');
+		}
+		else {
 			SetShowSnackBar(true);
 			SetValid(false);
-			setErr('username must be unique');
-			setTimeout(() => {
-				SetShowSnackBar(false);
-			}, 1000);
+			setErr('invalid');
 		}
+		setTimeout(() => {
+			SetShowSnackBar(false);
+		}, 1000);	
 	}
 
 	return (

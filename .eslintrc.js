@@ -41,9 +41,11 @@ module.exports = {
 			'warn',
 			'single'
 		],
+		'@typescript-eslint/no-non-null-assertion': 'off',
 		'semi': [
 			'warn',
 			'always'
-		]
+		],
+		'@typescript-eslint/no-explicit-any' : 'off'
 	}
 };

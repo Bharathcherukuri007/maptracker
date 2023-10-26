@@ -6,16 +6,16 @@ import User from '../models/User';
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
 import { Typography } from '@mui/material';
-import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
-import config from '../config';
+import useServiceLayer from '../serviceLayer/servicelayer';
 
 export default function Register() {
 	const [user, setUser] = useState<User>(new User('', ''));
 	const [valid, SetValid] = useState<boolean>(true);
 	const [showSnackBar, SetShowSnackBar] = useState(false);
-	const [err, setErr] = useState<any>('');
 	const navigate = useNavigate();
+	const [err, setErr] = useState<any>('');
+	const { postUser } = useServiceLayer();
 
 	function isValid(user: User) {
 		if (user!.password!.length! >= 8 && user!.name!.trim().length > 1) {
@@ -24,30 +24,25 @@ export default function Register() {
 		return false;
 	}
 
-	async function postUser() {
-		try {
-			const res = await axios.post(
-				`${config.API_KEY}/User/user`,
-				{
-					userName: user.name,
-					userPassword: user.password,
-				}
-			);
-			if (res.status === 200) {
-				SetShowSnackBar(true);
-				SetValid(true);
-				setTimeout(() => {
-					navigate('/login');
-				}, 200);
-			} else {
-				SetShowSnackBar(false);
-				SetValid(false);
-			}
-		} catch (e) {
+	async function addUser(){
+
+		const res = await postUser(user);
+		if(res.success){
+			SetShowSnackBar(true);
+			SetValid(true);
+			setTimeout(() => {
+				navigate('/login');
+			}, 200);
+		}
+		else{
 			SetShowSnackBar(true);
 			SetValid(false);
-			setErr('username must be unique');
+			setErr('something went wrong');
+
 		}
+		
+			
+
 	}
 
 	return (
@@ -56,8 +51,7 @@ export default function Register() {
 				<h1>SignUp</h1>
 				<div className="form">
 					<Typography variant="h6">
-            Already a user? {' '}  
-            
+            Already a user?{' '}
 						<span>
 							<Link to="/login">Login</Link>
 						</span>
@@ -90,13 +84,13 @@ export default function Register() {
 						>
               password should 8 characters long
 						</Typography>
-					) }
+					)}
 					{isValid(user) ? (
 						<Button
 							size="large"
 							variant="contained"
 							className="loginbutton"
-							onClick={postUser}
+							onClick={addUser}
 						>
               Signup
 						</Button>

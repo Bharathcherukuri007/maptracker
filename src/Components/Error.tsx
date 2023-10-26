@@ -6,7 +6,7 @@ export default function Error() {
 	const navigate = useNavigate();
 	useEffect(() => {
 		const successCallback = (position: GeolocationPosition) => {
-      console.log(position);
+			console.log(position);
 			navigate('/home');
 		};
 

@@ -10,7 +10,5 @@ class Location{
 	}
 }
 
-export interface resData {
-    id: string , longitude: number, latitude: number, timestamp :string, userId: number
-}
+
 export default Location;

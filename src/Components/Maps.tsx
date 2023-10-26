@@ -1,23 +1,20 @@
 import tt from '@tomtom-international/web-sdk-maps';
-import React, { useContext, useEffect, useRef, useState } from 'react';
-import * as ttapi from '@tomtom-international/web-sdk-services';
+import React, { useContext, useEffect, useState } from 'react';
 import '../App.css';
 import {
 	Alert,
 } from '@mui/material';
-import MapIcon from '@mui/icons-material/Map';
 import { UserContext } from '../Context/Context';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import Location from '../models/Locations';
-import { resData } from '../models/Locations';
 import Navbar from '../Components/Navbar';
-import config from '../config';
+import useServiceLayer from '../serviceLayer/servicelayer';
 
 export interface CalculateRoute {
   lat: number;
   lng: number;
 }
+
 export default function Maps() {
 	const mapElement = React.useRef<HTMLDivElement>(null);
 	const [map, setMap] = useState<tt.Map>();
@@ -28,6 +25,7 @@ export default function Maps() {
 	const [location, setLocation] = useState(true);
 	const navigate = useNavigate();
 	const [locations, setLocations] = useState<Location[]>([]);
+	const {getLocationsByUsername} = useServiceLayer();
 	
 
 	const addMarker = (loc: [number, number], date: string, map: any) => {
@@ -46,32 +44,19 @@ export default function Maps() {
 	};
 
 	async function getLocation() {
-		try {
-			const res = await axios.get(
-				`${config.API_KEY}/Location/getLocation/${username}`
-			);
-			if (res.status === 200) {
-				const data: Location[] = [];
-				res.data.map((d: resData) => {
-					data.push(new Location(d.longitude, d.latitude, d.timestamp));
-				});
-				setLocations(data);
-				let routingLocations: CalculateRoute[] = [];
-				data.map((a) => {
-					routingLocations = [
-						...routingLocations,
-						{
-							lat: a.latitude,
-							lng: a.longitude,
-						},
-					];
-					//`${new Date((a.timestamp)).getHours().toString().padStart(2, '0')}: ${new Date((a.timestamp)).getMinutes().toString().padStart(2, '0')}: ${new Date((a.timestamp)).getSeconds().toString().padStart(2, '0')}`
-				});
-				// setLantlng(routingLocations);
-			}
-		} catch (e) {
-			console.log(e);
+		const res = await getLocationsByUsername(username.name!);
+		const data: Location[] = [];
+		if(res.length > 0){
+			res.map((d) => {
+				data.push(new Location(d.longitude, d.latitude, d.timestamp));
+			});
+			setLocations(data);
+
 		}
+		else{
+			console.log('error');
+		}
+		
 	}
 
 	const recalculateRoutes = () => {
@@ -84,7 +69,6 @@ export default function Maps() {
 					lng: a.longitude,
 				},
 			];
-			//`${new Date((a.timestamp)).getHours().toString().padStart(2, '0')}: ${new Date((a.timestamp)).getMinutes().toString().padStart(2, '0')}: ${new Date((a.timestamp)).getSeconds().toString().padStart(2, '0')}`
 			addMarker(
 				[a.longitude, a.latitude],
 				new Date(a.timestamp).toUTCString(),

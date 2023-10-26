@@ -34,7 +34,6 @@ export default function Charts() {
 				const temp: any = [['Location', 'Number of times visited']];
 				res.data.map((address: any) => {
 					temp.push([address.streetName, address.visits]);
-					// temp.push([address.address[0], address.count])
 				});
 
 				setData(temp);
