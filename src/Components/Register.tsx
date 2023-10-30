@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import "../App.css";
-import Button from "@mui/material/Button/Button";
+import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import User from "../models/User";
 import { use } from "chai";
