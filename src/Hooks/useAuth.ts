@@ -1,8 +1,11 @@
 import { useContext } from "react";
-import {UserContext} from '../Context/Context';
 import User from "../models/User";
+import { UserContext } from "../Context/Context";
 
-function UseAuth(){
+
+function useAuth(){
+    //  const useUserContext = () => useContext(UserContext);
+
     const [user, SetUser, username, setUsername] = useContext(UserContext);
 
     function signIn(user: User){
@@ -20,4 +23,4 @@ function UseAuth(){
     ];
     
 }
-export default UseAuth;
+export default useAuth;
